@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Coordinator</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #0B1F3A;
+    --blue:   #1A4B8C;
+    --mid:    #2E75B6;
+    --accent: #00C2CB;
+    --light:  #F0F6FF;
+    --white:  #FFFFFF;
+    --gray:   #6B7A90;
+    --border: #D0DFF0;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #EBF2FA;
+    color: #1A2A3A;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    animation: fadeUp .6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .header {
+    background: var(--navy);
+    border-radius: 16px 16px 0 0;
+    padding: 44px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,194,203,.18) 0%, transparent 70%);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--mid));
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(0,194,203,.15);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,194,203,.3);
+    margin-bottom: 16px;
+  }
+
+  .job-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.15;
+  }
+
+  .meta-bar {
+    background: var(--blue);
+    padding: 18px 48px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: rgba(255,255,255,.75);
+  }
+  .meta-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .meta-item strong { color: var(--white); font-weight: 500; }
+
+  .body {
+    background: var(--white);
+    padding: 44px 48px;
+    display: grid;
+    gap: 36px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .summary-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #2A3A4A;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .info-card {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .info-card .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 4px;
+  }
+  .info-card .value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1.5;
+  }
+
+  .resp-group { margin-bottom: 24px; }
+  .resp-group:last-child { margin-bottom: 0; }
+
+  .group-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--navy);
+    background: var(--light);
+    border-left: 3px solid var(--accent);
+    padding: 7px 12px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 12px;
+  }
+
+  .resp-list, .qual-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .resp-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #2A3A4A;
+  }
+
+  .resp-list li::before {
+    content: '';
+    width: 7px; height: 7px;
+    min-width: 7px;
+    border-radius: 2px;
+    background: var(--accent);
+    margin-top: 7px;
+  }
+
+  .qual-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #2A3A4A;
+  }
+
+  .qual-list li::before {
+    content: '✓';
+    color: var(--mid);
+    font-weight: 700;
+    font-size: 13px;
+    margin-top: 2px;
+    min-width: 16px;
+  }
+
+  .skills-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .skill-pill {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--blue);
+    transition: background .2s, border-color .2s;
+    cursor: default;
+  }
+  .skill-pill:hover {
+    background: var(--blue);
+    color: var(--white);
+    border-color: var(--blue);
+  }
+
+  .footer {
+    background: var(--navy);
+    border-radius: 0 0 16px 16px;
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer .f-left, .footer .f-right {
+    font-size: 12px;
+    color: rgba(255,255,255,.45);
+  }
+  .footer strong { color: rgba(255,255,255,.75); }
+
+  @media (max-width: 600px) {
+    .header, .body, .meta-bar, .footer { padding-left: 24px; padding-right: 24px; }
+    .job-title { font-size: 26px; }
+    .info-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="tag">Program &amp; Project Management</div>
+    <h1 class="job-title">Project Coordinator</h1>
+  </div>
+
+  <!-- META BAR -->
+  <div class="meta-bar">
+    <div class="meta-item"><span class="dot"></span><strong>Department:</strong>&nbsp; PMO – Program &amp; Project Management</div>
+    <div class="meta-item"><span class="dot"></span><strong>Employment:</strong>&nbsp; Full-Time</div>
+    <div class="meta-item"><span class="dot"></span><strong>Experience:</strong>&nbsp; 0–2 Years</div>
+    <div class="meta-item"><span class="dot"></span><strong>Certifications:</strong>&nbsp; CAPM Preferred · OSHA 10 Required</div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- Summary -->
+    <div>
+      <div class="section-label">Position Summary</div>
+      <p class="summary-text">
+        The Project Coordinator is the foundational entry-level role within AFL's hyperscale PMO, serving as the administrative and organizational backbone of the project delivery team on active hyperscale data center fiber programs. Reporting directly to an Associate Project Manager or Project Manager, this role is responsible for maintaining project documentation, scheduling and facilitating meetings, tracking action items, updating registers and logs, supporting material and logistics coordination, and ensuring the project team has the information and administrative support it needs to keep delivery moving. The Project Coordinator does not manage scope, budget, or subcontractor relationships independently — but plays a vital role in keeping projects organized, documented, and on track behind the scenes. This is AFL's primary entry point into the PMO career pathway, offering structured exposure to hyperscale fiber project delivery and a clear development route toward the Associate Project Manager level.
+      </p>
+    </div>
+
+    <!-- Position Details -->
+    <div>
+      <div class="section-label">Position Details</div>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="label">Location</div>
+          <div class="value">Field Sites / Data Center Campuses</div>
+        </div>
+        <div class="info-card">
+          <div class="label">Certifications Required</div>
+          <div class="value">CAPM Preferred · OSHA 10 Required Within 30 Days of Hire</div>
+        </div>
+        <div class="info-card">
+          <div class="label">Minimum Experience</div>
+          <div class="value">0–2 years in Project Coordination, Field Admin, or Construction Support</div>
+        </div>
+        <div class="info-card">
+          <div class="label">Education</div>
+          <div class="value">Bachelor's in Electrical, Telecom, or Civil Engineering · Construction Management Accepted</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Responsibilities -->
+    <div>
+      <div class="section-label">Key Responsibilities</div>
+
+      <div class="resp-group">
+        <div class="group-title">Meeting Coordination &amp; Communication Support</div>
+        <ul class="resp-list">
+          <li>Schedule, organize, and facilitate project team meetings — including daily field coordination huddles, weekly progress reviews, subcontractor coordination meetings, and client site walkthroughs — ensuring all participants are notified, agendas are prepared, and meeting rooms or virtual links are arranged in advance</li>
+          <li>Record accurate and complete meeting minutes during all project meetings — capturing discussion points, decisions made, action items assigned, responsible parties, and due dates — and distribute finalized minutes to all attendees within 24 hours of each meeting</li>
+          <li>Maintain the project's master action item log — tracking all open actions from meetings and field reviews, following up with responsible team members on outstanding items, and providing weekly action status updates to the Project Manager</li>
+          <li>Support communication flow across the project team by distributing drawings, RFIs, submittals, schedule updates, and other project correspondence to the appropriate team members in a timely and organized manner</li>
+          <li>Prepare and format draft project status reports, progress summaries, and presentation materials under the direction of the Project Manager or Associate Project Manager for internal and client-facing use</li>
+        </ul>
+      </div>
+
+      <div class="resp-group">
+        <div class="group-title">Document Control &amp; Records Management</div>
+        <ul class="resp-list">
+          <li>Own the project's document control register — logging, filing, tracking, and distributing all incoming and outgoing project documents including engineering drawings, RFIs, submittals, change orders, inspection records, test reports, and correspondence in AFL's document management system</li>
+          <li>Maintain all project logs and registers current and accurate — including the RFI log, submittal register, change order log, risk register, punch list, material delivery log, and document transmittal register — updating records daily as new information is received</li>
+          <li>Ensure all project documentation is organized, labeled, and stored in the correct folder structure within AFL's project management system — making records accessible to the full project team and readily available for client, audit, or QA review at any time</li>
+          <li>Assist in the preparation of project closeout documentation packages by collating as-built drawings, fiber test records, splice logs, quality inspection sign-offs, and client acceptance forms into organized turnover packages under Project Manager direction</li>
+          <li>Maintain a current set of project drawings on site — tracking revision levels, ensuring superseded drawings are removed from circulation, and confirming field crews are working from the latest approved drawing revisions at all times</li>
+        </ul>
+      </div>
+
+      <div class="resp-group">
+        <div class="group-title">Schedule Tracking &amp; Reporting Support</div>
+        <ul class="resp-list">
+          <li>Collect and compile daily field production data from AFL crews and subcontractor daily reports — recording task completion percentages, labor hours, and installed quantities into the project schedule tracking tools under the direction of the Project Manager</li>
+          <li>Assist in preparing weekly look-ahead schedules by formatting and distributing the Project Manager's three-week look-ahead plan to the project team, subcontractors, and client site representatives on the agreed weekly reporting cadence</li>
+          <li>Prepare and distribute structured daily field reports using AFL's standard reporting templates — collating field notes, production records, crew attendance, safety observations, and weather logs into a formatted daily report for PM review and submission</li>
+          <li>Track and log milestone completion dates against the approved project schedule baseline — flagging milestone variance or upcoming deadline conflicts to the Project Manager for review and action</li>
+          <li>Support the preparation of client-facing weekly progress reports by assembling schedule data, photo documentation, production summaries, and open item lists into the approved reporting format under Project Manager direction</li>
+        </ul>
+      </div>
+
+      <div class="resp-group">
+        <div class="group-title">Material &amp; Logistics Coordination Support</div>
+        <ul class="resp-list">
+          <li>Maintain the project material delivery log — recording all material purchase orders, expected delivery dates, actual receipt dates, quantities received, and on-site storage locations, and flagging late or incomplete deliveries to the Project Manager immediately</li>
+          <li>Coordinate material delivery scheduling with AFL's procurement team and suppliers — confirming delivery windows, site access requirements, and staging areas in advance of scheduled delivery dates to prevent schedule disruption on the data center campus</li>
+          <li>Conduct regular on-site material inventory checks — counting and recording quantities of fiber cable, splice hardware, conduit, connectors, tools, and testing equipment on hand, and notifying the Project Manager of any shortages or discrepancies against the approved material plan</li>
+          <li>Process material requisition requests from field crew leads and subcontractors — completing AFL's standard material request forms and submitting them to the Project Manager for approval and procurement team processing</li>
+          <li>Assist in coordinating tool, equipment, and vehicle logistics for project mobilization, demobilization, and inter-site transfers — tracking asset locations and ensuring all equipment is accounted for throughout the project</li>
+        </ul>
+      </div>
+
+      <div class="resp-group">
+        <div class="group-title">Quality &amp; Safety Administration Support</div>
+        <ul class="resp-list">
+          <li>Maintain and update the project quality inspection log and punch list register — recording newly identified quality items, responsible parties, target resolution dates, and closure status, and distributing updated punch list reports to the project team on the agreed review cadence</li>
+          <li>Collect, organize, and file all fiber test documentation — including OTDR traces, insertion loss test records, splice attenuation logs, and optical power meter results — ensuring test records are complete, labeled correctly, and stored in the project document management system before submission to the client</li>
+          <li>Support the daily safety administration process — assisting the Project Manager in distributing daily toolbox talk forms, collecting signed JHA records, maintaining the site safety observation log, and filing incident reports as directed</li>
+          <li>Track subcontractor safety compliance documentation — maintaining records of current safety certifications, OSHA cards, site induction completions, and insurance certificates for all subcontractor personnel working on the project</li>
+          <li>Assist in preparing photographic site documentation — taking and organizing daily site progress photos with correct location, date, and activity labels for inclusion in project reports and the final turnover package</li>
+        </ul>
+      </div>
+
+      <div class="resp-group">
+        <div class="group-title">Professional Growth &amp; PMO Learning</div>
+        <ul class="resp-list">
+          <li>Complete AFL's structured onboarding program for Project Coordinators — engaging with required training on PMO standards, document control procedures, reporting templates, scheduling tools, and site safety protocols</li>
+          <li>Develop foundational knowledge of AFL's core fiber infrastructure delivery activities — including the basics of fusion splicing, OSP/ISP cable installation, OTDR testing, and data center cabling — through active field observation and guided on-the-job learning alongside the project team</li>
+          <li>Pursue CAPM certification with AFL's support as a defined milestone on the formal development pathway toward Associate Project Manager responsibility</li>
+          <li>Seek regular feedback from the assigned Project Manager or Associate Project Manager on administrative performance, organizational skills, and professional development — applying all coaching and guidance to continuously improve delivery support quality</li>
+          <li>Contribute a positive, proactive, and detail-oriented work ethic to AFL's team culture of safety, accountability, delivery excellence, and continuous improvement across all assigned project support activities</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Qualifications -->
+    <div>
+      <div class="section-label">Qualifications &amp; Requirements</div>
+      <ul class="qual-list">
+        <li>Bachelor's degree in Electrical Engineering, Telecommunications Engineering, or Civil/Construction Engineering required; Construction Management accepted</li>
+        <li>0–2 years of experience in project coordination, construction administration, field support, or a related role; experience in fiber optic, telecom, or data center environments is a strong plus</li>
+        <li>CAPM certification preferred; OSHA 10-Hour certification required within 30 days of hire</li>
+        <li>Strong organizational skills with exceptional attention to detail — demonstrated ability to maintain accurate logs, registers, and filing systems across multiple concurrent projects or workstreams</li>
+        <li>Proficiency in Microsoft Office Suite (Word, Excel, Outlook, PowerPoint); familiarity with MS Project or equivalent scheduling tools is a plus</li>
+        <li>Solid written and verbal communication skills — ability to produce clear, accurate meeting minutes, daily field reports, and action item logs on a consistent daily basis</li>
+        <li>Demonstrated ability to manage multiple concurrent administrative tasks, meet daily reporting deadlines, and maintain organized project records without direct supervision</li>
+        <li>Basic familiarity with project management concepts including scope, schedule, cost, risk, and quality — supported by formal education, CAPM pursuit, or relevant work experience</li>
+        <li>Basic awareness of fiber optic infrastructure, data center construction environments, or telecom field operations is advantageous but not required; eagerness to learn is essential</li>
+        <li>Willingness to maintain a field presence on hyperscale data center campus sites throughout project assignments, with travel as required; valid driver's license required</li>
+        <li>Proactive, team-oriented, and dependable — committed to supporting the project team with urgency, accuracy, and a positive attitude in a fast-paced, mission-critical delivery environment</li>
+      </ul>
+    </div>
+
+    <!-- Skills -->
+    <div>
+      <div class="section-label">Core Skills</div>
+      <div class="skills-wrap">
+        <span class="skill-pill">Document Control</span>
+        <span class="skill-pill">Meeting Coordination</span>
+        <span class="skill-pill">Meeting Minutes &amp; Action Logs</span>
+        <span class="skill-pill">Daily Field Reporting</span>
+        <span class="skill-pill">Schedule Data Entry</span>
+        <span class="skill-pill">Register &amp; Log Maintenance</span>
+        <span class="skill-pill">Material Delivery Tracking</span>
+        <span class="skill-pill">Punch List Administration</span>
+        <span class="skill-pill">Test Record Filing</span>
+        <span class="skill-pill">Safety Documentation Support</span>
+        <span class="skill-pill">Site Photography</span>
+        <span class="skill-pill">MS Office Suite</span>
+        <span class="skill-pill">MS Project (Basic)</span>
+        <span class="skill-pill">Closeout Package Support</span>
+        <span class="skill-pill">PMO Process Learning</span>
+        <span class="skill-pill">Team Communication</span>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="f-left">Hyperscale PMO &nbsp;·&nbsp; <strong>Job Description #08 of 18</strong></div>
+    <div class="f-right">April 2026</div>
+  </div>
+
+</div>
+</body>
+</html>
